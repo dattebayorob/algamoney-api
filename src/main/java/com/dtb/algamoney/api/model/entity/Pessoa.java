@@ -26,7 +26,7 @@ public class Pessoa {
 	}
 	@Column(name="ativo")
 	@NotNull
-	private boolean ativo;
+	private Boolean ativo;
 	
 	@Embedded
 	private Endereco endereco;
@@ -38,10 +38,10 @@ public class Pessoa {
 	public void setId(Long id) {
 		this.id = id;
 	}
-	public boolean isAtivo() {
+	public Boolean isAtivo() {
 		return ativo;
 	}
-	public void setAtivo(boolean ativo) {
+	public void setAtivo(Boolean ativo) {
 		this.ativo = ativo;
 	}
 	public Endereco getEndereco() {
