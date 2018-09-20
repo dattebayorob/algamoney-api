@@ -7,7 +7,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Entity
 @Table(name="pessoa")
@@ -17,6 +21,7 @@ public class Pessoa {
 	private Long id;
 	@Column(name="nome")
 	@NotNull
+	@Size(min=5,max=30)
 	private String nome;
 	public String getNome() {
 		return nome;
@@ -40,6 +45,11 @@ public class Pessoa {
 	}
 	public Boolean isAtivo() {
 		return ativo;
+	}
+	@JsonIgnore
+	@Transient
+	public Boolean isInativo() {
+		return !this.ativo;
 	}
 	public void setAtivo(Boolean ativo) {
 		this.ativo = ativo;
