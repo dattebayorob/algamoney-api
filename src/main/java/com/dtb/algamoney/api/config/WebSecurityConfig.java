@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.NoOpPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,6 +19,7 @@ import org.springframework.security.oauth2.config.annotation.web.configuration.E
 @EnableWebSecurity
 
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
+	
 	@Override
     protected void configure(AuthenticationManagerBuilder auth) 
       throws Exception {
@@ -34,9 +36,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 	//}
 	@Bean
 	@Override
-	protected AuthenticationManager authenticationManager() throws Exception {
+	public AuthenticationManager authenticationManagerBean() throws Exception {
 		// TODO Auto-generated method stub
-		return super.authenticationManager();
+		return super.authenticationManagerBean();
+	}
+	@Bean
+	@Override
+	public UserDetailsService userDetailsServiceBean() throws Exception {
+		// TODO Auto-generated method stub
+		return super.userDetailsServiceBean();
 	}
 	
 	
