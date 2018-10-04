@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.config.annotation.configurers.ClientDetailsServiceConfigurer;
 import org.springframework.security.oauth2.config.annotation.web.configuration.AuthorizationServerConfigurerAdapter;
 import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
@@ -21,6 +22,8 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
 	private AuthenticationManager authenticationManager;
 	@Autowired
 	private UserDetailsService userDetailsService;
+	@Autowired
+	private PasswordEncoder passwordEncoder;
 	
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
@@ -31,7 +34,7 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
 		clients.inMemory().withClient("angular")
-		.secret("angular")
+		.secret("$2a$10$fcm2MXDEASZPkVEO0cHmfuPedpK/FaOzTYSjXTAkDP39T8wL3592G") //TODO botar isso no properties.
 		.scopes("read","write")
 		.authorizedGrantTypes("password","refresh_token")
 		.scopes("all")
