@@ -22,8 +22,6 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
 	private AuthenticationManager authenticationManager;
 	@Autowired
 	private UserDetailsService userDetailsService;
-	@Autowired
-	private PasswordEncoder passwordEncoder;
 	
 	@Override
 	public void configure(AuthorizationServerSecurityConfigurer security) throws Exception {
@@ -33,13 +31,22 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
 	}
 	@Override
 	public void configure(ClientDetailsServiceConfigurer clients) throws Exception {
-		clients.inMemory().withClient("angular")
-		.secret("$2a$10$fcm2MXDEASZPkVEO0cHmfuPedpK/FaOzTYSjXTAkDP39T8wL3592G") //TODO botar isso no properties.
-		.scopes("read","write")
-		.authorizedGrantTypes("password","refresh_token")
-		.scopes("all")
-		.accessTokenValiditySeconds(20)
-		.refreshTokenValiditySeconds(3600*24);
+		clients.inMemory()
+			.withClient("angular")
+			.secret("$2a$10$fcm2MXDEASZPkVEO0cHmfuPedpK/FaOzTYSjXTAkDP39T8wL3592G") //TODO botar isso no properties.
+			.scopes("read","write")
+			.authorizedGrantTypes("password","refresh_token")
+			.scopes("all")
+			.accessTokenValiditySeconds(600)
+			.refreshTokenValiditySeconds(3600*24)
+		.and()
+			.withClient("mobile")
+			.secret("$2a$10$tVz4SzCosHiWkx4pmptYT.Gs2rcxSDp/KNCkHczo4WUlLmsnWyYjK") //TODO botar isso no properties.
+			.scopes("read")
+			.authorizedGrantTypes("password","refresh_token")
+			.scopes("all")
+			.accessTokenValiditySeconds(600)
+			.refreshTokenValiditySeconds(3600*24);
 	}
 	
 	@Override

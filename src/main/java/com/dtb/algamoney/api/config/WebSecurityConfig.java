@@ -25,12 +25,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
       throws Exception {
         auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder);
     }
-	
-	//@Bean
-	//@SuppressWarnings("deprecation")
-	// public static NoOpPasswordEncoder passwordEncoder() {
-	//     return (NoOpPasswordEncoder) NoOpPasswordEncoder.getInstance();
-	// }
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -41,14 +35,5 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter{
 		// TODO Auto-generated method stub
 		return super.authenticationManagerBean();
 	}
-	/*
-	@Bean(name="CustomUserDetailsService")
-	@Override
-	public UserDetailsService userDetailsServiceBean() throws Exception {
-		// TODO Auto-generated method stub
-		return super.userDetailsServiceBean();
-	}*/
-	
-	
 	
 }
