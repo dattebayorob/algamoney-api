@@ -12,14 +12,11 @@ import javax.servlet.ServletResponse;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletRequestWrapper;
-import javax.servlet.http.HttpServletResponse;
 
 import org.apache.catalina.util.ParameterMap;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
@@ -37,12 +34,9 @@ public class RefreshTokenPreProcessorFilter implements Filter{
 		HttpServletRequest req = (HttpServletRequest) request;
 		if(req.getRequestURI().equalsIgnoreCase("/oauth/token")
 			&& req.getParameter("grant_type").equals("refresh_token") 
-			&&
-				req.getCookies() != null) {
-			
+			&& req.getCookies() != null) {
 			for(Cookie cookie: req.getCookies()) {
 				if(cookie.getName().equals("refreshToken")) {
-					System.out.println(cookie.getValue());					
 					String refreshToken = cookie.getValue();
 					req = new MyServletRequestWrapper(req, refreshToken);
 				}

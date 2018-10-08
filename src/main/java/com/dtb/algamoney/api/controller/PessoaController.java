@@ -23,7 +23,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dtb.algamoney.api.model.entity.Pessoa;
-import com.dtb.algamoney.api.model.event.RecursoCriadoEvent;
 import com.dtb.algamoney.api.model.repository.PessoaRepository;
 import com.dtb.algamoney.api.model.repository.filter.PessoaFilter;
 import com.dtb.algamoney.api.service.PessoaService;
@@ -46,20 +45,15 @@ public class PessoaController {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
 	public ResponseEntity<?> buscaPessoaId(@PathVariable Long id){
-		Optional<Pessoa> pessoaById = pessoaRepository.findById(id);
-		if(pessoaById.isPresent()) {
-			return ResponseEntity.ok(pessoaById);
-		}else {
-			return ResponseEntity.notFound().build();
-		}
+		Optional<Pessoa> pessoa = pessoaService.buscaPessoaId(id);
+		return ResponseEntity.ok(pessoa);
 		
 	}
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Pessoa> adicionarPessoa(@Valid @RequestBody Pessoa pessoa,
 			HttpServletResponse response){
-		Pessoa pessoaSalva = pessoaRepository.save(pessoa);
-		publisher.publishEvent(new RecursoCriadoEvent(this, response, pessoaSalva.getId()));
+		Pessoa pessoaSalva = pessoaService.adicionarPessoa(pessoa,response);
 		return ResponseEntity.status(HttpStatus.CREATED).body(pessoaSalva);
 	}
 	@DeleteMapping("/{id}")

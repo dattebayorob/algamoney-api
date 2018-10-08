@@ -2,11 +2,15 @@ package com.dtb.algamoney.api.service;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletResponse;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.dtb.algamoney.api.model.entity.Pessoa;
+import com.dtb.algamoney.api.model.event.RecursoCriadoEvent;
 import com.dtb.algamoney.api.model.repository.PessoaRepository;
 
 @Service
@@ -14,19 +18,28 @@ public class PessoaService {
 	
 	@Autowired
 	private PessoaRepository pessoaRepository;
+
+	@Autowired
+	private ApplicationEventPublisher publisher;
+	
+	public Pessoa adicionarPessoa(Pessoa pessoa, HttpServletResponse response) {
+		Pessoa pessoaSalva = pessoaRepository.save(pessoa);
+		publisher.publishEvent(new RecursoCriadoEvent(this, response, pessoaSalva.getId()));
+		return pessoaSalva;
+	}
 	public Pessoa atualizarPessoa(Long id, Pessoa pessoa) {
-		Optional<Pessoa> pessoaSalva = buscarPessoa(id);
+		Optional<Pessoa> pessoaSalva = buscaPessoaId(id);
 		pessoa.setId(id);
 		return pessoaRepository.save(pessoa);
 	}
 	
 	public void atualizarPessoaAtivo(Long id, Boolean ativo) {
-		Optional<Pessoa> pessoaSalva = buscarPessoa(id);
+		Optional<Pessoa> pessoaSalva = buscaPessoaId(id);
 		pessoaSalva.get().setAtivo(ativo);
 		pessoaRepository.save(pessoaSalva.get());
 	}
 	
-	private Optional<Pessoa> buscarPessoa(Long id) {
+	public Optional<Pessoa> buscaPessoaId(Long id) {
 		Optional<Pessoa> pessoaSalva = pessoaRepository.findById(id);
 		if(pessoaSalva.isPresent()) {
 			return pessoaSalva;

@@ -7,7 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -19,39 +18,31 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dtb.algamoney.api.model.entity.Categoria;
-import com.dtb.algamoney.api.model.event.RecursoCriadoEvent;
-import com.dtb.algamoney.api.model.repository.CategoriaRepository;
+import com.dtb.algamoney.api.service.CategoriaService;
 
 @RestController
 @RequestMapping("/categorias")
 public class CategoriaController {
 	
 	@Autowired
-	private CategoriaRepository categoriaRepository;
-	@Autowired
-	private ApplicationEventPublisher publisher;
+	private CategoriaService categoriaService;
 	
 	@GetMapping
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
 	public List<Categoria> listar(){
-		return categoriaRepository.findAll();
+		return categoriaService.listar();
+		
 	} 
 	@PostMapping
 	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('write')")
 	public ResponseEntity<Categoria> criar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {		
-		Categoria categoriaSalva = categoriaRepository.save(categoria);
-		publisher.publishEvent(new RecursoCriadoEvent(this, response, categoriaSalva.getId()));
+		Categoria categoriaSalva = categoriaService.criar(categoria, response);
 		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);
-		
 	}
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
 	public ResponseEntity<?> buscaCodigo(@PathVariable Long id, HttpServletResponse response) {
-		Optional<Categoria> categoriaById = categoriaRepository.findById(id);
-		if (categoriaById.isPresent()) {
-			return ResponseEntity.ok(categoriaById);
-		}else {
-			return ResponseEntity.notFound().build();
-		}
+		Optional<Categoria> categoria = categoriaService.buscarCategoriaId(id);
+		return ResponseEntity.ok(categoria);
 	}
 }

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dtb.algamoney.api.model.entity.Lancamento;
 import com.dtb.algamoney.api.model.repository.filter.LancamentoFilter;
+import com.dtb.algamoney.api.model.repository.projection.ResumoLancamento;
 import com.dtb.algamoney.api.service.LancamentoService;
 
 @RestController
@@ -35,6 +36,11 @@ public class LancamentoController {
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
 	public Page<Lancamento> buscaLancamentos(LancamentoFilter lancamentoFilter, Pageable pageable){
 		return lancamentoService.buscarLancamentos(lancamentoFilter, pageable);
+	}
+	@GetMapping(params = "resumo")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+	public Page<ResumoLancamento> resumirLancamentos(LancamentoFilter lancamentoFilter, Pageable pageable){
+		return lancamentoService.resumirLancamentos(lancamentoFilter, pageable);
 	}
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")

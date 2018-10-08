@@ -19,6 +19,7 @@ import com.dtb.algamoney.api.model.exception.PessoaInexistenteOuInativaException
 import com.dtb.algamoney.api.model.repository.LancamentoRepository;
 import com.dtb.algamoney.api.model.repository.PessoaRepository;
 import com.dtb.algamoney.api.model.repository.filter.LancamentoFilter;
+import com.dtb.algamoney.api.model.repository.projection.ResumoLancamento;
 
 @Service
 public class LancamentoService {
@@ -45,6 +46,10 @@ public class LancamentoService {
 	}
 	public Page<Lancamento> buscarLancamentos(LancamentoFilter lancamentoFilter, Pageable pageable){
 		Page<Lancamento> lancamentos = lancamentoRepository.filtrar(lancamentoFilter, pageable);
+		return lancamentos;
+	}
+	public Page<ResumoLancamento> resumirLancamentos(LancamentoFilter lancamentoFilter, Pageable pageable){
+		Page<ResumoLancamento> lancamentos = lancamentoRepository.resumir(lancamentoFilter, pageable);
 		return lancamentos;
 	}
 	
