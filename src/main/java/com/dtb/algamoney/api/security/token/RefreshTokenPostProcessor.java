@@ -19,8 +19,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
 import com.dtb.algamoney.api.config.AlgamoneyApiProperty;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
-
 @ControllerAdvice
 public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2AccessToken>{
 	@Autowired
@@ -51,7 +49,7 @@ public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2Acces
 	private void adicionarRefreshTokenNoCookie(String refreshToken, HttpServletRequest req, HttpServletResponse resp) {
 		Cookie refreshTokenCookie = new Cookie("refreshToken",refreshToken);
 		refreshTokenCookie.setHttpOnly(true);
-		refreshTokenCookie.setSecure(algaMoneyApiProperty.getSeguranca().isEnableHttps()); 
+		refreshTokenCookie.setSecure(algaMoneyApiProperty.getSeguranca());
 		refreshTokenCookie.setPath(req.getContextPath() + "/oauth/token");
 		refreshTokenCookie.setMaxAge(3600*24*30);
 		resp.addCookie(refreshTokenCookie);

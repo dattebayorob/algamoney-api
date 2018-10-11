@@ -32,30 +32,36 @@ public class LancamentoController {
 	
 	@Autowired
 	private LancamentoService lancamentoService;
+	
+	private static final String ROLE_PESQUISAR_LANCAMENTO = "hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')";
+	private static final String ROLE_CADASTRAR_LANCAMENTO = "hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')";
+	private static final String ROLE_REMOVER_LANCAMENTO = "hasAuthority('ROLE_REMOVER_LANCAMENTOR') and #oauth2.hasScope('write')";
+	
+	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+	@PreAuthorize(ROLE_PESQUISAR_LANCAMENTO)
 	public Page<Lancamento> buscaLancamentos(LancamentoFilter lancamentoFilter, Pageable pageable){
 		return lancamentoService.buscarLancamentos(lancamentoFilter, pageable);
 	}
 	@GetMapping(params = "resumo")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+	@PreAuthorize(ROLE_PESQUISAR_LANCAMENTO)
 	public Page<ResumoLancamento> resumirLancamentos(LancamentoFilter lancamentoFilter, Pageable pageable){
 		return lancamentoService.resumirLancamentos(lancamentoFilter, pageable);
 	}
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')")
+	@PreAuthorize(ROLE_PESQUISAR_LANCAMENTO)
 	public ResponseEntity<?> buscaLancamentoId(@PathVariable Long id ) {
 		Optional<Lancamento> lancamento = lancamentoService.buscarLancamentoId(id);
 		return ResponseEntity.ok(lancamento);
 	}
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasSCope('write')")
+	@PreAuthorize(ROLE_CADASTRAR_LANCAMENTO)
 	public ResponseEntity<Lancamento> atualizarLancamento(@Valid @RequestBody Lancamento lancamento, @PathVariable Long id){
 		Lancamento lancamentoSalvo = lancamentoService.atualizarLancamento(lancamento, id);
 		return ResponseEntity.ok(lancamentoSalvo);
 	}
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')")
+	@PreAuthorize(ROLE_CADASTRAR_LANCAMENTO)
 	public ResponseEntity<Lancamento> adicionarLancamento(@Valid @RequestBody Lancamento lancamento,
 			HttpServletResponse response){
 		Lancamento lancamentoSalvo = lancamentoService.adicionarLancamento(lancamento,response);
@@ -63,7 +69,7 @@ public class LancamentoController {
 	}
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("hasAuthority('ROLE_REMOVER_LANCAMENTO') and #oauth2.hasScope('write')")
+	@PreAuthorize(ROLE_REMOVER_LANCAMENTO)
 	public void removerLancamento(@PathVariable Long id){
 		lancamentoService.removerLancamento(id);
 	}

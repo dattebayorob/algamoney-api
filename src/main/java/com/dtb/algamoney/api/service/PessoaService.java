@@ -7,11 +7,14 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import com.dtb.algamoney.api.model.entity.Pessoa;
 import com.dtb.algamoney.api.model.event.RecursoCriadoEvent;
 import com.dtb.algamoney.api.model.repository.PessoaRepository;
+import com.dtb.algamoney.api.model.repository.filter.PessoaFilter;
 
 @Service
 public class PessoaService {
@@ -22,6 +25,9 @@ public class PessoaService {
 	@Autowired
 	private ApplicationEventPublisher publisher;
 	
+	public Page<Pessoa> buscarPessoas(PessoaFilter pessoaFilter, Pageable pageable){
+		return pessoaRepository.filtrar(pessoaFilter, pageable);
+	} 
 	public Pessoa adicionarPessoa(Pessoa pessoa, HttpServletResponse response) {
 		Pessoa pessoaSalva = pessoaRepository.save(pessoa);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, pessoaSalva.getId()));

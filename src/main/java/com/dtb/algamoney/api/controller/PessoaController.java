@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -23,7 +22,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.dtb.algamoney.api.model.entity.Pessoa;
-import com.dtb.algamoney.api.model.repository.PessoaRepository;
 import com.dtb.algamoney.api.model.repository.filter.PessoaFilter;
 import com.dtb.algamoney.api.service.PessoaService;
 
@@ -32,25 +30,26 @@ import com.dtb.algamoney.api.service.PessoaService;
 public class PessoaController {
 	
 	@Autowired
-	private PessoaRepository pessoaRepository;
-	@Autowired
-	private ApplicationEventPublisher publisher;
-	@Autowired
 	private PessoaService pessoaService;
+	
+	private static final String ROLE_PESQUISAR_PESSOA = "hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')";
+	private static final String ROLE_CADASTRAR_PESSOA = "hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')";
+	private static final String ROLE_REMOVER_PESSOA = "hasAuthority('ROLE_REMOVER_PESSOAR_PESSOA') and #oauth2.hasScope('write')";
+	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
-	public Page<Pessoa> listar(PessoaFilter pessoaFilter, Pageable pageable){
-		return pessoaRepository.filtrar(pessoaFilter, pageable);
+	@PreAuthorize(ROLE_PESQUISAR_PESSOA)
+	public Page<Pessoa> buscarPessoas(PessoaFilter pessoaFilter, Pageable pageable){
+		return pessoaService.buscarPessoas(pessoaFilter, pageable);
 	} 
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_PESSOA') and #oauth2.hasScope('read')")
+	@PreAuthorize(ROLE_PESQUISAR_PESSOA)
 	public ResponseEntity<?> buscaPessoaId(@PathVariable Long id){
 		Optional<Pessoa> pessoa = pessoaService.buscaPessoaId(id);
 		return ResponseEntity.ok(pessoa);
 		
 	}
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
+	@PreAuthorize(ROLE_CADASTRAR_PESSOA)
 	public ResponseEntity<Pessoa> adicionarPessoa(@Valid @RequestBody Pessoa pessoa,
 			HttpServletResponse response){
 		Pessoa pessoaSalva = pessoaService.adicionarPessoa(pessoa,response);
@@ -58,18 +57,18 @@ public class PessoaController {
 	}
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
-	@PreAuthorize("hasAuthority('ROLE_REMOVER_PESSOA') and #oauth2.hasScope('write')")
+	@PreAuthorize(ROLE_REMOVER_PESSOA)
 	public void removerPessoa(@PathVariable Long id){
 		pessoaService.removerPessoa(id);
 	}
 	@PutMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
+	@PreAuthorize(ROLE_CADASTRAR_PESSOA)
 	public ResponseEntity<Pessoa> atualizarPessoa(@PathVariable Long id, @Valid @RequestBody Pessoa pessoa){
 		Pessoa pessoaSalva = pessoaService.atualizarPessoa(id, pessoa);
 		return ResponseEntity.ok(pessoaSalva);
 	}
 	@PutMapping("{id}/ativo")
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_PESSOA') and #oauth2.hasScope('write')")
+	@PreAuthorize(ROLE_CADASTRAR_PESSOA)
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	public void atualizarPessoaAtivo(@PathVariable Long id, @RequestBody Boolean ativo) {
 		pessoaService.atualizarPessoaAtivo(id, ativo);

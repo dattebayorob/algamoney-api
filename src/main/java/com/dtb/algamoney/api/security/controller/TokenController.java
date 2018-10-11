@@ -22,7 +22,7 @@ public class TokenController {
 	public void revoke(HttpServletRequest request, HttpServletResponse response) {
 		Cookie cookie = new Cookie("refreshToken","lol");
 		cookie.setHttpOnly(true);
-		cookie.setSecure(algaMoneyApiProperty.getSeguranca().isEnableHttps());
+		cookie.setSecure(algaMoneyApiProperty.getSeguranca());
 		cookie.setPath(request.getContextPath() + "/oauth/token");
 		cookie.setMaxAge(0);
 		
