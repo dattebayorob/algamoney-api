@@ -1,4 +1,4 @@
-package com.dtb.algamoney.api.config.property;
+package com.dtb.algamoney.api.config;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

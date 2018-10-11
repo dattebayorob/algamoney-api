@@ -2,25 +2,25 @@
   "hints": [],
   "groups": [
     {
-      "sourceType": "com.dtb.algamoney.api.config.property.AlgamoneyApiProperty",
+      "sourceType": "com.dtb.algamoney.api.config.AlgamoneyApiProperty",
       "name": "algamoney",
-      "type": "com.dtb.algamoney.api.config.property.AlgamoneyApiProperty"
+      "type": "com.dtb.algamoney.api.config.AlgamoneyApiProperty"
     },
     {
-      "sourceType": "com.dtb.algamoney.api.config.property.AlgamoneyApiProperty",
+      "sourceType": "com.dtb.algamoney.api.config.AlgamoneyApiProperty",
       "name": "algamoney.seguranca",
-      "sourceMethod": "public com.dtb.algamoney.api.config.property.AlgamoneyApiProperty.Seguranca getSeguranca() ",
-      "type": "com.dtb.algamoney.api.config.property.AlgamoneyApiProperty$Seguranca"
+      "sourceMethod": "public com.dtb.algamoney.api.config.AlgamoneyApiProperty.Seguranca getSeguranca() ",
+      "type": "com.dtb.algamoney.api.config.AlgamoneyApiProperty$Seguranca"
     }
   ],
   "properties": [
     {
-      "sourceType": "com.dtb.algamoney.api.config.property.AlgamoneyApiProperty",
+      "sourceType": "com.dtb.algamoney.api.config.AlgamoneyApiProperty",
       "name": "algamoney.origem-permitida",
       "type": "java.lang.String"
     },
     {
-      "sourceType": "com.dtb.algamoney.api.config.property.AlgamoneyApiProperty$Seguranca",
+      "sourceType": "com.dtb.algamoney.api.config.AlgamoneyApiProperty$Seguranca",
       "name": "algamoney.seguranca.enable-https",
       "type": "java.lang.Boolean"
     }

@@ -1,4 +1,4 @@
-package com.dtb.algamoney.api.token;
+package com.dtb.algamoney.api.security.token;
 
 import java.io.IOException;
 import java.util.Map;

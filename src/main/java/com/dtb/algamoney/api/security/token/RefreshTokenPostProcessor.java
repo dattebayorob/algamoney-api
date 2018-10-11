@@ -1,4 +1,4 @@
-package com.dtb.algamoney.api.token;
+package com.dtb.algamoney.api.security.token;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -17,7 +17,7 @@ import org.springframework.security.oauth2.common.OAuth2AccessToken;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 
-import com.dtb.algamoney.api.config.property.AlgamoneyApiProperty;
+import com.dtb.algamoney.api.config.AlgamoneyApiProperty;
 
 import ch.qos.logback.core.net.SyslogOutputStream;
 

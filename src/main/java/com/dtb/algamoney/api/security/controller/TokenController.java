@@ -1,4 +1,4 @@
-package com.dtb.algamoney.api.controller;
+package com.dtb.algamoney.api.security.controller;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dtb.algamoney.api.config.property.AlgamoneyApiProperty;
+import com.dtb.algamoney.api.config.AlgamoneyApiProperty;
 
 @RestController
 @RequestMapping("/tokens")

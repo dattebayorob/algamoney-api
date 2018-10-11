@@ -4,7 +4,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 
-import com.dtb.algamoney.api.config.property.AlgamoneyApiProperty;
+import com.dtb.algamoney.api.config.AlgamoneyApiProperty;
 
 @SpringBootApplication
 @EnableConfigurationProperties(AlgamoneyApiProperty.class)

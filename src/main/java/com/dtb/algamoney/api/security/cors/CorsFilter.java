@@ -1,4 +1,4 @@
-package com.dtb.algamoney.api.cors;
+package com.dtb.algamoney.api.security.cors;
 
 import java.io.IOException;
 
@@ -16,7 +16,7 @@ import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
 
-import com.dtb.algamoney.api.config.property.AlgamoneyApiProperty;
+import com.dtb.algamoney.api.config.AlgamoneyApiProperty;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
