@@ -26,23 +26,26 @@ public class CategoriaController {
 	
 	@Autowired
 	private CategoriaService categoriaService;
+	private static final String ROLE_PESQUISAR_CATEGORIA = "hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')";
+	private static final String ROLE_CADASTRAR_CATEGORIA = "hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('write')";
+
 	
 	@GetMapping
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
+	@PreAuthorize(ROLE_PESQUISAR_CATEGORIA)
 	public List<Categoria> listar(){
 		return categoriaService.listar();
 		
 	} 
 	@PostMapping
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_CATEGORIA') and #oauth2.hasScope('write')")
+	@PreAuthorize(ROLE_CADASTRAR_CATEGORIA)
 	public ResponseEntity<Categoria> criar(@Valid @RequestBody Categoria categoria, HttpServletResponse response) {		
-		Categoria categoriaSalva = categoriaService.criar(categoria, response);
+		Categoria categoriaSalva = categoriaService.adicionar(categoria, response);
 		return ResponseEntity.status(HttpStatus.CREATED).body(categoriaSalva);
 	}
 	@GetMapping("/{id}")
-	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_CATEGORIA') and #oauth2.hasScope('read')")
+	@PreAuthorize(ROLE_PESQUISAR_CATEGORIA)
 	public ResponseEntity<?> buscaCodigo(@PathVariable Long id, HttpServletResponse response) {
-		Optional<Categoria> categoria = categoriaService.buscarCategoriaId(id);
+		Optional<Categoria> categoria = categoriaService.buscarPeloId(id);
 		return ResponseEntity.ok(categoria);
 	}
 }

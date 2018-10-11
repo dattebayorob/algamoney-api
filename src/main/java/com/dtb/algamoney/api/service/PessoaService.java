@@ -17,44 +17,51 @@ import com.dtb.algamoney.api.model.repository.PessoaRepository;
 import com.dtb.algamoney.api.model.repository.filter.PessoaFilter;
 
 @Service
-public class PessoaService {
-	
+public class PessoaService implements BasicoService<Pessoa, PessoaFilter> {
+
 	@Autowired
 	private PessoaRepository pessoaRepository;
 
 	@Autowired
 	private ApplicationEventPublisher publisher;
-	
-	public Page<Pessoa> buscarPessoas(PessoaFilter pessoaFilter, Pageable pageable){
+
+	@Override
+	public Page<Pessoa> filtrar(PessoaFilter pessoaFilter, Pageable pageable) {
 		return pessoaRepository.filtrar(pessoaFilter, pageable);
-	} 
-	public Pessoa adicionarPessoa(Pessoa pessoa, HttpServletResponse response) {
+	}
+
+	@Override
+	public Pessoa adicionar(Pessoa pessoa, HttpServletResponse response) {
 		Pessoa pessoaSalva = pessoaRepository.save(pessoa);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, pessoaSalva.getId()));
 		return pessoaSalva;
 	}
-	public Pessoa atualizarPessoa(Long id, Pessoa pessoa) {
-		Optional<Pessoa> pessoaSalva = buscaPessoaId(id);
+
+	@Override
+	public Pessoa atualizar(Pessoa pessoa, Long id) {
+		Optional<Pessoa> pessoaSalva = buscarPeloId(id);
 		pessoa.setId(id);
 		return pessoaRepository.save(pessoa);
 	}
-	
+
 	public void atualizarPessoaAtivo(Long id, Boolean ativo) {
-		Optional<Pessoa> pessoaSalva = buscaPessoaId(id);
+		Optional<Pessoa> pessoaSalva = buscarPeloId(id);
 		pessoaSalva.get().setAtivo(ativo);
 		pessoaRepository.save(pessoaSalva.get());
 	}
-	
-	public Optional<Pessoa> buscaPessoaId(Long id) {
+
+	@Override
+	public Optional<Pessoa> buscarPeloId(Long id) {
 		Optional<Pessoa> pessoaSalva = pessoaRepository.findById(id);
-		if(pessoaSalva.isPresent()) {
+		if (pessoaSalva.isPresent()) {
 			return pessoaSalva;
-		}else {
+		} else {
 			throw new EmptyResultDataAccessException(1);
 		}
 	}
 
-	public void removerPessoa(Long id) {
+	@Override
+	public void removerPeloId(Long id) {
 		pessoaRepository.deleteById(id);
 	}
 }

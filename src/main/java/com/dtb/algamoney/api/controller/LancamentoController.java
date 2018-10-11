@@ -41,7 +41,7 @@ public class LancamentoController {
 	@GetMapping
 	@PreAuthorize(ROLE_PESQUISAR_LANCAMENTO)
 	public Page<Lancamento> buscaLancamentos(LancamentoFilter lancamentoFilter, Pageable pageable){
-		return lancamentoService.buscarLancamentos(lancamentoFilter, pageable);
+		return lancamentoService.filtrar(lancamentoFilter, pageable);
 	}
 	@GetMapping(params = "resumo")
 	@PreAuthorize(ROLE_PESQUISAR_LANCAMENTO)
@@ -51,26 +51,26 @@ public class LancamentoController {
 	@GetMapping("/{id}")
 	@PreAuthorize(ROLE_PESQUISAR_LANCAMENTO)
 	public ResponseEntity<?> buscaLancamentoId(@PathVariable Long id ) {
-		Optional<Lancamento> lancamento = lancamentoService.buscarLancamentoId(id);
+		Optional<Lancamento> lancamento = lancamentoService.buscarPeloId(id);
 		return ResponseEntity.ok(lancamento);
 	}
 	@PutMapping("/{id}")
 	@PreAuthorize(ROLE_CADASTRAR_LANCAMENTO)
 	public ResponseEntity<Lancamento> atualizarLancamento(@Valid @RequestBody Lancamento lancamento, @PathVariable Long id){
-		Lancamento lancamentoSalvo = lancamentoService.atualizarLancamento(lancamento, id);
+		Lancamento lancamentoSalvo = lancamentoService.atualizar(lancamento, id);
 		return ResponseEntity.ok(lancamentoSalvo);
 	}
 	@PostMapping
 	@PreAuthorize(ROLE_CADASTRAR_LANCAMENTO)
 	public ResponseEntity<Lancamento> adicionarLancamento(@Valid @RequestBody Lancamento lancamento,
 			HttpServletResponse response){
-		Lancamento lancamentoSalvo = lancamentoService.adicionarLancamento(lancamento,response);
+		Lancamento lancamentoSalvo = lancamentoService.adicionar(lancamento,response);
 		return ResponseEntity.status(HttpStatus.CREATED).body(lancamentoSalvo);
 	}
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PreAuthorize(ROLE_REMOVER_LANCAMENTO)
 	public void removerLancamento(@PathVariable Long id){
-		lancamentoService.removerLancamento(id);
+		lancamentoService.removerPeloId(id);
 	}
 }

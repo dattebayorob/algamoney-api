@@ -39,12 +39,12 @@ public class PessoaController {
 	@GetMapping
 	@PreAuthorize(ROLE_PESQUISAR_PESSOA)
 	public Page<Pessoa> buscarPessoas(PessoaFilter pessoaFilter, Pageable pageable){
-		return pessoaService.buscarPessoas(pessoaFilter, pageable);
+		return pessoaService.filtrar(pessoaFilter, pageable);
 	} 
 	@GetMapping("/{id}")
 	@PreAuthorize(ROLE_PESQUISAR_PESSOA)
 	public ResponseEntity<?> buscaPessoaId(@PathVariable Long id){
-		Optional<Pessoa> pessoa = pessoaService.buscaPessoaId(id);
+		Optional<Pessoa> pessoa = pessoaService.buscarPeloId(id);
 		return ResponseEntity.ok(pessoa);
 		
 	}
@@ -52,19 +52,19 @@ public class PessoaController {
 	@PreAuthorize(ROLE_CADASTRAR_PESSOA)
 	public ResponseEntity<Pessoa> adicionarPessoa(@Valid @RequestBody Pessoa pessoa,
 			HttpServletResponse response){
-		Pessoa pessoaSalva = pessoaService.adicionarPessoa(pessoa,response);
+		Pessoa pessoaSalva = pessoaService.adicionar(pessoa,response);
 		return ResponseEntity.status(HttpStatus.CREATED).body(pessoaSalva);
 	}
 	@DeleteMapping("/{id}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PreAuthorize(ROLE_REMOVER_PESSOA)
 	public void removerPessoa(@PathVariable Long id){
-		pessoaService.removerPessoa(id);
+		pessoaService.removerPeloId(id);
 	}
 	@PutMapping("/{id}")
 	@PreAuthorize(ROLE_CADASTRAR_PESSOA)
 	public ResponseEntity<Pessoa> atualizarPessoa(@PathVariable Long id, @Valid @RequestBody Pessoa pessoa){
-		Pessoa pessoaSalva = pessoaService.atualizarPessoa(id, pessoa);
+		Pessoa pessoaSalva = pessoaService.atualizar(pessoa, id);
 		return ResponseEntity.ok(pessoaSalva);
 	}
 	@PutMapping("{id}/ativo")
