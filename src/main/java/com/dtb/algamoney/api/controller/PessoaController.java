@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -44,8 +45,12 @@ public class PessoaController {
 	@GetMapping("/{id}")
 	@PreAuthorize(ROLE_PESQUISAR_PESSOA)
 	public ResponseEntity<?> buscaPessoaId(@PathVariable Long id){
-		Optional<Pessoa> pessoa = pessoaService.buscarPeloId(id);
-		return ResponseEntity.ok(pessoa);
+		try {
+			Optional<Pessoa> pessoa = pessoaService.buscarPeloId(id);
+			return ResponseEntity.ok(pessoa);
+		}catch(EmptyResultDataAccessException e) {
+			return ResponseEntity.notFound().build();
+		}
 		
 	}
 	@PostMapping

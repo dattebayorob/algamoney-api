@@ -6,6 +6,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -51,8 +52,12 @@ public class LancamentoController {
 	@GetMapping("/{id}")
 	@PreAuthorize(ROLE_PESQUISAR_LANCAMENTO)
 	public ResponseEntity<?> buscaLancamentoId(@PathVariable Long id ) {
-		Optional<Lancamento> lancamento = lancamentoService.buscarPeloId(id);
-		return ResponseEntity.ok(lancamento);
+		try {
+			Optional<Lancamento> lancamento = lancamentoService.buscarPeloId(id);
+			return ResponseEntity.ok(lancamento);
+		}catch (EmptyResultDataAccessException e) {
+			return ResponseEntity.notFound().build();
+		}
 	}
 	@PutMapping("/{id}")
 	@PreAuthorize(ROLE_CADASTRAR_LANCAMENTO)
