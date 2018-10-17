@@ -1,5 +1,6 @@
 package com.dtb.algamoney.api.controller;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -22,6 +23,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.dtb.algamoney.api.model.dto.LancamentoEstaticaCategoria;
+import com.dtb.algamoney.api.model.dto.LancamentoEstaticaPorDia;
 import com.dtb.algamoney.api.model.entity.Lancamento;
 import com.dtb.algamoney.api.model.repository.filter.LancamentoFilter;
 import com.dtb.algamoney.api.model.repository.projection.ResumoLancamento;
@@ -58,6 +61,17 @@ public class LancamentoController {
 		}catch (EmptyResultDataAccessException e) {
 			return ResponseEntity.notFound().build();
 		}
+	}
+	@GetMapping("/estatisticas/por-categoria")
+	@PreAuthorize(ROLE_PESQUISAR_LANCAMENTO)
+	public List<LancamentoEstaticaCategoria> porCategoria(){
+		return this.lancamentoService.porCategoria();
+	}
+	
+	@GetMapping("/estatisticas/por-dia")
+	@PreAuthorize(ROLE_PESQUISAR_LANCAMENTO)
+	public List<LancamentoEstaticaPorDia> porDia(){
+		return this.lancamentoService.porDia();
 	}
 	@PutMapping("/{id}")
 	@PreAuthorize(ROLE_CADASTRAR_LANCAMENTO)

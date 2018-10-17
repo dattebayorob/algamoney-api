@@ -1,5 +1,7 @@
 package com.dtb.algamoney.api.service;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import javax.servlet.http.HttpServletResponse;
@@ -11,6 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.dtb.algamoney.api.model.dto.LancamentoEstaticaCategoria;
+import com.dtb.algamoney.api.model.dto.LancamentoEstaticaPorDia;
 import com.dtb.algamoney.api.model.entity.Lancamento;
 import com.dtb.algamoney.api.model.entity.Pessoa;
 import com.dtb.algamoney.api.model.event.RecursoCriadoEvent;
@@ -72,5 +76,12 @@ public class LancamentoService implements BasicoService<Lancamento, LancamentoFi
 	public void removerPeloId(Long id) {
 		lancamentoRepository.deleteById(id);
 	}
+	
+	public List<LancamentoEstaticaCategoria> porCategoria(){
+		return this.lancamentoRepository.porCategoria(LocalDate.now());
+	}
 
+	public List<LancamentoEstaticaPorDia> porDia(){
+		return this.lancamentoRepository.porDia(LocalDate.now());
+	}
 }
