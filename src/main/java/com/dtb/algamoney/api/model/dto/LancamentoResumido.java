@@ -1,11 +1,10 @@
-package com.dtb.algamoney.api.model.repository.projection;
-
+package com.dtb.algamoney.api.model.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
 import com.dtb.algamoney.api.model.enums.Tipo;
 
-public class ResumoLancamento {
+public class LancamentoResumido {
 	private Long id;
 	private String descricao;
 	private LocalDate dataVencimento;
@@ -16,7 +15,7 @@ public class ResumoLancamento {
 	private String pessoa;
 	
 	
-	public ResumoLancamento(Long id, String descricao, LocalDate dataVencimento, LocalDate dataPagamento,
+	public LancamentoResumido(Long id, String descricao, LocalDate dataVencimento, LocalDate dataPagamento,
 			BigDecimal valor, Tipo tipo, String categoria, String pessoa) {
 		this.id = id;
 		this.descricao = descricao;

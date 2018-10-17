@@ -25,9 +25,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.dtb.algamoney.api.model.dto.LancamentoEstaticaCategoria;
 import com.dtb.algamoney.api.model.dto.LancamentoEstaticaPorDia;
+import com.dtb.algamoney.api.model.dto.LancamentoResumido;
 import com.dtb.algamoney.api.model.entity.Lancamento;
 import com.dtb.algamoney.api.model.repository.filter.LancamentoFilter;
-import com.dtb.algamoney.api.model.repository.projection.ResumoLancamento;
 import com.dtb.algamoney.api.service.LancamentoService;
 
 @RestController
@@ -49,7 +49,7 @@ public class LancamentoController {
 	}
 	@GetMapping(params = "resumo")
 	@PreAuthorize(ROLE_PESQUISAR_LANCAMENTO)
-	public Page<ResumoLancamento> resumirLancamentos(LancamentoFilter lancamentoFilter, Pageable pageable){
+	public Page<LancamentoResumido> resumirLancamentos(LancamentoFilter lancamentoFilter, Pageable pageable){
 		return lancamentoService.resumirLancamentos(lancamentoFilter, pageable);
 	}
 	@GetMapping("/{id}")

@@ -19,6 +19,7 @@ import org.springframework.util.StringUtils;
 import com.dtb.algamoney.api.model.entity.Pessoa;
 import com.dtb.algamoney.api.model.entity.Pessoa_;
 import com.dtb.algamoney.api.model.repository.filter.PessoaFilter;
+import com.dtb.algamoney.api.model.repository.utils.Paginador;
 
 public class PessoaRepositoryImpl implements PessoaRepositoryQuery{
 	@Autowired
@@ -31,24 +32,10 @@ public class PessoaRepositoryImpl implements PessoaRepositoryQuery{
 		Predicate[] predicates = criarRestricoes(pessoaFilter, builder, root);
 		criteria.where(predicates);
 		TypedQuery<Pessoa> query = manager.createQuery(criteria);
-		adicionarRestricoesDePaginacao(query,pageable);
-		return new PageImpl<Pessoa>(query.getResultList(),pageable,total(pessoaFilter));
-	}
-	private long total(PessoaFilter pessoaFilter) {
-		CriteriaBuilder builder = manager.getCriteriaBuilder();
-		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
-		Root<Pessoa> root = criteria.from(Pessoa.class);
-		Predicate[] predicates = criarRestricoes(pessoaFilter, builder, root);
-		criteria.where(predicates);
-		criteria.select(builder.count(root));
-		return manager.createQuery(criteria).getSingleResult();
-	}
-	private void adicionarRestricoesDePaginacao(TypedQuery<Pessoa> query, Pageable pageable) {
-		int paginaAtual = pageable.getPageNumber();
-		int totalRegistrosPorPagina = pageable.getPageSize();
-		int primeiroRegistroDaPagina = paginaAtual * totalRegistrosPorPagina;
-		query.setFirstResult(primeiroRegistroDaPagina);
-		query.setMaxResults(totalRegistrosPorPagina);
+		Paginador<PessoaFilter> paginador = new Paginador<>();
+		paginador.adicionarRestricoesDePaginacao(query,pageable);
+		return new PageImpl<Pessoa>(query.getResultList(),pageable,
+				paginador.total(pessoaFilter, manager, predicates));
 	}
 	private Predicate[] criarRestricoes(PessoaFilter pessoaFilter, CriteriaBuilder builder, Root<Pessoa> root) {
 		List<Predicate> predicates = new ArrayList<>();

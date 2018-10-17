@@ -19,12 +19,13 @@ import org.springframework.util.StringUtils;
 
 import com.dtb.algamoney.api.model.dto.LancamentoEstaticaCategoria;
 import com.dtb.algamoney.api.model.dto.LancamentoEstaticaPorDia;
+import com.dtb.algamoney.api.model.dto.LancamentoResumido;
 import com.dtb.algamoney.api.model.entity.Categoria_;
 import com.dtb.algamoney.api.model.entity.Lancamento;
 import com.dtb.algamoney.api.model.entity.Lancamento_;
 import com.dtb.algamoney.api.model.entity.Pessoa_;
 import com.dtb.algamoney.api.model.repository.filter.LancamentoFilter;
-import com.dtb.algamoney.api.model.repository.projection.ResumoLancamento;
+import com.dtb.algamoney.api.model.repository.utils.Paginador;
 
 public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 	
@@ -39,17 +40,20 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
 		criteria.where(predicates);
 		TypedQuery<Lancamento> query = manager.createQuery(criteria);
-		adicionarRestricoesDePaginacao(query,pageable);
-		return new PageImpl<>(query.getResultList(),pageable,total(lancamentoFilter));
+		//adicionarRestricoesDePaginacao(query,pageable);
+		Paginador<LancamentoFilter> paginador = new Paginador<>();
+		paginador.adicionarRestricoesDePaginacao(query, pageable);
+		return new PageImpl<>(query.getResultList(),pageable,
+				paginador.total(lancamentoFilter, manager, predicates));//totalDeLancamentos(lancamentoFilter));
 	}
 
 	@Override
-	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
+	public Page<LancamentoResumido> resumir(LancamentoFilter lancamentoFilter, Pageable pageable) {
 		CriteriaBuilder builder = manager.getCriteriaBuilder();
-		CriteriaQuery<ResumoLancamento> criteria = builder.createQuery(ResumoLancamento.class);
+		CriteriaQuery<LancamentoResumido> criteria = builder.createQuery(LancamentoResumido.class);
 		Root<Lancamento> root = criteria.from(Lancamento.class);
 		
-		criteria.select(builder.construct(ResumoLancamento.class, 
+		criteria.select(builder.construct(LancamentoResumido.class, 
 				root.get(Lancamento_.id),
 				root.get(Lancamento_.descricao),
 				root.get(Lancamento_.dataVencimento),
@@ -61,9 +65,11 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 				));
 		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
 		criteria.where(predicates);
-		TypedQuery<ResumoLancamento> query = manager.createQuery(criteria);
-		adicionarRestricoesDePaginacao(query,pageable);
-		return new PageImpl<>(query.getResultList(),pageable,total(lancamentoFilter));
+		TypedQuery<LancamentoResumido> query = manager.createQuery(criteria);
+		Paginador<LancamentoFilter> paginador = new Paginador<>();
+		paginador.adicionarRestricoesDePaginacao(query, pageable);
+		return new PageImpl<>(query.getResultList(),pageable,
+				paginador.total(lancamentoFilter, manager, predicates));
 	}
 	
 	@Override
@@ -76,19 +82,19 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		
 		criteriaQuery
 			.select(criteriaBuilder.construct(LancamentoEstaticaCategoria.class,
-					root.get(Lancamento_.CATEGORIA),
-					criteriaBuilder.sum(root.get(Lancamento_.VALOR)))
+					root.get(Lancamento_.categoria),
+					criteriaBuilder.sum(root.get(Lancamento_.valor)))
 			);
 		LocalDate primeiroDia = mesReferencia.withDayOfMonth(1); // Primeiro dia do mes
 		LocalDate ultimoDia = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth()); // Quantidade de dias
 		criteriaQuery
 			.where(
 					criteriaBuilder.greaterThanOrEqualTo(
-							root.get(Lancamento_.DATA_VENCIMENTO), primeiroDia),
+							root.get(Lancamento_.dataVencimento), primeiroDia),
 					criteriaBuilder.lessThanOrEqualTo(
-							root.get(Lancamento_.DATA_VENCIMENTO), ultimoDia)
+							root.get(Lancamento_.dataVencimento), ultimoDia)
 			);
-		criteriaQuery.groupBy(root.get(Lancamento_.CATEGORIA));
+		criteriaQuery.groupBy(root.get(Lancamento_.categoria));
 		
 		TypedQuery<LancamentoEstaticaCategoria> query = manager.createQuery(criteriaQuery);
 		return query.getResultList();
@@ -104,20 +110,20 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		
 		criteriaQuery
 			.select(criteriaBuilder.construct(LancamentoEstaticaPorDia.class,
-					root.get(Lancamento_.TIPO),
-					root.get(Lancamento_.DATA_VENCIMENTO),
-					criteriaBuilder.sum(root.get(Lancamento_.VALOR)))
+					root.get(Lancamento_.tipo),
+					root.get(Lancamento_.dataVencimento),
+					criteriaBuilder.sum(root.get(Lancamento_.valor)))
 			);
 		LocalDate primeiroDia = mesReferencia.withDayOfMonth(1); // Primeiro dia do mes
 		LocalDate ultimoDia = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth()); // Quantidade de dias
 		criteriaQuery
 			.where(
 					criteriaBuilder.greaterThanOrEqualTo(
-							root.get(Lancamento_.DATA_VENCIMENTO), primeiroDia),
+							root.get(Lancamento_.dataVencimento), primeiroDia),
 					criteriaBuilder.lessThanOrEqualTo(
-							root.get(Lancamento_.DATA_VENCIMENTO), ultimoDia)
+							root.get(Lancamento_.dataVencimento), ultimoDia)
 			);
-		criteriaQuery.groupBy(root.get(Lancamento_.TIPO),root.get(Lancamento_.DATA_VENCIMENTO));
+		criteriaQuery.groupBy(root.get(Lancamento_.tipo),root.get(Lancamento_.dataVencimento));
 		
 		TypedQuery<LancamentoEstaticaPorDia> query = manager.createQuery(criteriaQuery);
 		return query.getResultList();
@@ -142,23 +148,6 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 					root.get(Lancamento_.dataVencimento), lancamentoFilter.getDataVencimentoAte()));
 		}
 		return predicates.toArray(new Predicate[predicates.size()]);
-	}
-
-	private void adicionarRestricoesDePaginacao(TypedQuery<?> query, Pageable pageable) {
-		int paginaAtual = pageable.getPageNumber();
-		int totalRegistrosPorPagina = pageable.getPageSize();
-		int primeiroRegistroDaPagina = paginaAtual * totalRegistrosPorPagina;
-		query.setFirstResult(primeiroRegistroDaPagina);
-		query.setMaxResults(totalRegistrosPorPagina);
-	}
-	private Long total(LancamentoFilter lancamentoFilter) {
-		CriteriaBuilder builder = manager.getCriteriaBuilder();
-		CriteriaQuery<Long> criteria = builder.createQuery(Long.class);
-		Root<Lancamento> root = criteria.from(Lancamento.class);
-		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
-		criteria.where(predicates);
-		criteria.select(builder.count(root));
-		return manager.createQuery(criteria).getSingleResult();
 	}
 
 

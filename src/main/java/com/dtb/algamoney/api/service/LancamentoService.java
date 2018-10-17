@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 
 import com.dtb.algamoney.api.model.dto.LancamentoEstaticaCategoria;
 import com.dtb.algamoney.api.model.dto.LancamentoEstaticaPorDia;
+import com.dtb.algamoney.api.model.dto.LancamentoResumido;
 import com.dtb.algamoney.api.model.entity.Lancamento;
 import com.dtb.algamoney.api.model.entity.Pessoa;
 import com.dtb.algamoney.api.model.event.RecursoCriadoEvent;
@@ -22,7 +23,6 @@ import com.dtb.algamoney.api.model.exception.PessoaInexistenteOuInativaException
 import com.dtb.algamoney.api.model.repository.LancamentoRepository;
 import com.dtb.algamoney.api.model.repository.PessoaRepository;
 import com.dtb.algamoney.api.model.repository.filter.LancamentoFilter;
-import com.dtb.algamoney.api.model.repository.projection.ResumoLancamento;
 
 @Service
 public class LancamentoService implements BasicoService<Lancamento, LancamentoFilter> {
@@ -56,8 +56,8 @@ public class LancamentoService implements BasicoService<Lancamento, LancamentoFi
 		return lancamentos;
 	}
 
-	public Page<ResumoLancamento> resumirLancamentos(LancamentoFilter lancamentoFilter, Pageable pageable) {
-		Page<ResumoLancamento> lancamentos = lancamentoRepository.resumir(lancamentoFilter, pageable);
+	public Page<LancamentoResumido> resumirLancamentos(LancamentoFilter lancamentoFilter, Pageable pageable) {
+		Page<LancamentoResumido> lancamentos = lancamentoRepository.resumir(lancamentoFilter, pageable);
 		return lancamentos;
 	}
 

@@ -46,7 +46,7 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
 			.scopes("read","write")
 			.authorizedGrantTypes("password","refresh_token")
 			.scopes("all")
-			.accessTokenValiditySeconds(600)
+			.accessTokenValiditySeconds(10*600)
 			.refreshTokenValiditySeconds(3600*24)
 		.and()
 			.withClient("mobile")
