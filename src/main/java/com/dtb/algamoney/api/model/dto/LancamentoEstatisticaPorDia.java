@@ -5,11 +5,11 @@ import java.time.LocalDate;
 
 import com.dtb.algamoney.api.model.enums.Tipo;
 
-public class LancamentoEstaticaPorDia {
+public class LancamentoEstatisticaPorDia {
 	private Tipo tipo;
 	private LocalDate dia;
 	private BigDecimal total;
-	public LancamentoEstaticaPorDia(Tipo tipo, LocalDate dia, BigDecimal total) {
+	public LancamentoEstatisticaPorDia(Tipo tipo, LocalDate dia, BigDecimal total) {
 		this.tipo = tipo;
 		this.dia = dia;
 		this.total = total;

@@ -13,8 +13,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import com.dtb.algamoney.api.model.dto.LancamentoEstaticaCategoria;
-import com.dtb.algamoney.api.model.dto.LancamentoEstaticaPorDia;
+import com.dtb.algamoney.api.model.dto.LancamentoEstatisticaPorCategoria;
+import com.dtb.algamoney.api.model.dto.LancamentoEstatisticaPorDia;
 import com.dtb.algamoney.api.model.dto.LancamentoResumido;
 import com.dtb.algamoney.api.model.entity.Lancamento;
 import com.dtb.algamoney.api.model.entity.Pessoa;
@@ -77,11 +77,11 @@ public class LancamentoService implements BasicoService<Lancamento, LancamentoFi
 		lancamentoRepository.deleteById(id);
 	}
 	
-	public List<LancamentoEstaticaCategoria> porCategoria(){
+	public List<LancamentoEstatisticaPorCategoria> porCategoria(){
 		return this.lancamentoRepository.porCategoria(LocalDate.now());
 	}
 
-	public List<LancamentoEstaticaPorDia> porDia(){
+	public List<LancamentoEstatisticaPorDia> porDia(){
 		return this.lancamentoRepository.porDia(LocalDate.now());
 	}
 }

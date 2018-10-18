@@ -4,10 +4,10 @@ import java.math.BigDecimal;
 
 import com.dtb.algamoney.api.model.entity.Categoria;
 
-public class LancamentoEstaticaCategoria {
+public class LancamentoEstatisticaPorCategoria {
 	private Categoria categoria;
 	private BigDecimal total;
-	public LancamentoEstaticaCategoria(Categoria categoria, BigDecimal total) {
+	public LancamentoEstatisticaPorCategoria(Categoria categoria, BigDecimal total) {
 		this.categoria = categoria;
 		this.total = total;
 	}

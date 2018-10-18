@@ -17,8 +17,8 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
-import com.dtb.algamoney.api.model.dto.LancamentoEstaticaCategoria;
-import com.dtb.algamoney.api.model.dto.LancamentoEstaticaPorDia;
+import com.dtb.algamoney.api.model.dto.LancamentoEstatisticaPorCategoria;
+import com.dtb.algamoney.api.model.dto.LancamentoEstatisticaPorDia;
 import com.dtb.algamoney.api.model.dto.LancamentoResumido;
 import com.dtb.algamoney.api.model.entity.Categoria_;
 import com.dtb.algamoney.api.model.entity.Lancamento;
@@ -31,6 +31,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 	
 	@PersistenceContext
 	private EntityManager manager;
+	
 	
 	@Override
 	public Page<Lancamento> filtrar(LancamentoFilter lancamentoFilter, Pageable pageable) {
@@ -73,15 +74,15 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 	}
 	
 	@Override
-	public List<LancamentoEstaticaCategoria> porCategoria(LocalDate mesReferencia) {
+	public List<LancamentoEstatisticaPorCategoria> porCategoria(LocalDate mesReferencia) {
 		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
 		
-		CriteriaQuery<LancamentoEstaticaCategoria> criteriaQuery = criteriaBuilder
-				.createQuery(LancamentoEstaticaCategoria.class);
+		CriteriaQuery<LancamentoEstatisticaPorCategoria> criteriaQuery = criteriaBuilder
+				.createQuery(LancamentoEstatisticaPorCategoria.class);
 		Root <Lancamento> root = criteriaQuery.from(Lancamento.class);
 		
 		criteriaQuery
-			.select(criteriaBuilder.construct(LancamentoEstaticaCategoria.class,
+			.select(criteriaBuilder.construct(LancamentoEstatisticaPorCategoria.class,
 					root.get(Lancamento_.categoria),
 					criteriaBuilder.sum(root.get(Lancamento_.valor)))
 			);
@@ -96,20 +97,20 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 			);
 		criteriaQuery.groupBy(root.get(Lancamento_.categoria));
 		
-		TypedQuery<LancamentoEstaticaCategoria> query = manager.createQuery(criteriaQuery);
+		TypedQuery<LancamentoEstatisticaPorCategoria> query = manager.createQuery(criteriaQuery);
 		return query.getResultList();
 	}
 
 	@Override
-	public List<LancamentoEstaticaPorDia> porDia(LocalDate mesReferencia) {
+	public List<LancamentoEstatisticaPorDia> porDia(LocalDate mesReferencia) {
 		CriteriaBuilder criteriaBuilder = manager.getCriteriaBuilder();
 		
-		CriteriaQuery<LancamentoEstaticaPorDia> criteriaQuery = criteriaBuilder
-				.createQuery(LancamentoEstaticaPorDia.class);
+		CriteriaQuery<LancamentoEstatisticaPorDia> criteriaQuery = criteriaBuilder
+				.createQuery(LancamentoEstatisticaPorDia.class);
 		Root <Lancamento> root = criteriaQuery.from(Lancamento.class);
 		
 		criteriaQuery
-			.select(criteriaBuilder.construct(LancamentoEstaticaPorDia.class,
+			.select(criteriaBuilder.construct(LancamentoEstatisticaPorDia.class,
 					root.get(Lancamento_.tipo),
 					root.get(Lancamento_.dataVencimento),
 					criteriaBuilder.sum(root.get(Lancamento_.valor)))
@@ -125,7 +126,7 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 			);
 		criteriaQuery.groupBy(root.get(Lancamento_.tipo),root.get(Lancamento_.dataVencimento));
 		
-		TypedQuery<LancamentoEstaticaPorDia> query = manager.createQuery(criteriaQuery);
+		TypedQuery<LancamentoEstatisticaPorDia> query = manager.createQuery(criteriaQuery);
 		return query.getResultList();
 	}
 	
