@@ -20,10 +20,7 @@ import org.springframework.util.StringUtils;
 import com.dtb.algamoney.api.model.dto.LancamentoEstatisticaPorCategoria;
 import com.dtb.algamoney.api.model.dto.LancamentoEstatisticaPorDia;
 import com.dtb.algamoney.api.model.dto.LancamentoResumido;
-import com.dtb.algamoney.api.model.entity.Categoria_;
 import com.dtb.algamoney.api.model.entity.Lancamento;
-import com.dtb.algamoney.api.model.entity.Lancamento_;
-import com.dtb.algamoney.api.model.entity.Pessoa_;
 import com.dtb.algamoney.api.model.repository.filter.LancamentoFilter;
 import com.dtb.algamoney.api.model.repository.utils.Paginador;
 
@@ -55,14 +52,14 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		Root<Lancamento> root = criteria.from(Lancamento.class);
 		
 		criteria.select(builder.construct(LancamentoResumido.class, 
-				root.get(Lancamento_.id),
-				root.get(Lancamento_.descricao),
-				root.get(Lancamento_.dataVencimento),
-				root.get(Lancamento_.dataPagamento),
-				root.get(Lancamento_.valor),
-				root.get(Lancamento_.tipo),
-				root.get(Lancamento_.categoria).get(Categoria_.nome),
-				root.get(Lancamento_.pessoa).get(Pessoa_.nome)
+				root.get("id"),
+				root.get("descricao"),
+				root.get("dataVencimento"),
+				root.get("dataPagamento"),
+				root.get("valor"),
+				root.get("tipo"),
+				root.get("categoria").get("nome"),
+				root.get("pessoa").get("nome")
 				));
 		Predicate[] predicates = criarRestricoes(lancamentoFilter, builder, root);
 		criteria.where(predicates);
@@ -83,19 +80,19 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		
 		criteriaQuery
 			.select(criteriaBuilder.construct(LancamentoEstatisticaPorCategoria.class,
-					root.get(Lancamento_.categoria),
-					criteriaBuilder.sum(root.get(Lancamento_.valor)))
+					root.get("categoria"),
+					criteriaBuilder.sum(root.get("valor")))
 			);
 		LocalDate primeiroDia = mesReferencia.withDayOfMonth(1); // Primeiro dia do mes
 		LocalDate ultimoDia = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth()); // Quantidade de dias
 		criteriaQuery
 			.where(
 					criteriaBuilder.greaterThanOrEqualTo(
-							root.get(Lancamento_.dataVencimento), primeiroDia),
+							root.get("dataVencimento"), primeiroDia),
 					criteriaBuilder.lessThanOrEqualTo(
-							root.get(Lancamento_.dataVencimento), ultimoDia)
+							root.get("dataVencimento"), ultimoDia)
 			);
-		criteriaQuery.groupBy(root.get(Lancamento_.categoria));
+		criteriaQuery.groupBy(root.get("categoria"));
 		
 		TypedQuery<LancamentoEstatisticaPorCategoria> query = manager.createQuery(criteriaQuery);
 		return query.getResultList();
@@ -111,20 +108,20 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		
 		criteriaQuery
 			.select(criteriaBuilder.construct(LancamentoEstatisticaPorDia.class,
-					root.get(Lancamento_.tipo),
-					root.get(Lancamento_.dataVencimento),
-					criteriaBuilder.sum(root.get(Lancamento_.valor)))
+					root.get("tipo"),
+					root.get("dataVencimento"),
+					criteriaBuilder.sum(root.get("valor")))
 			);
 		LocalDate primeiroDia = mesReferencia.withDayOfMonth(1); // Primeiro dia do mes
 		LocalDate ultimoDia = mesReferencia.withDayOfMonth(mesReferencia.lengthOfMonth()); // Quantidade de dias
 		criteriaQuery
 			.where(
 					criteriaBuilder.greaterThanOrEqualTo(
-							root.get(Lancamento_.dataVencimento), primeiroDia),
+							root.get("dataVencimento"), primeiroDia),
 					criteriaBuilder.lessThanOrEqualTo(
-							root.get(Lancamento_.dataVencimento), ultimoDia)
+							root.get("dataVencimento"), ultimoDia)
 			);
-		criteriaQuery.groupBy(root.get(Lancamento_.tipo),root.get(Lancamento_.dataVencimento));
+		criteriaQuery.groupBy(root.get("tipo"),root.get("dataVencimento"));
 		
 		TypedQuery<LancamentoEstatisticaPorDia> query = manager.createQuery(criteriaQuery);
 		return query.getResultList();
@@ -136,17 +133,17 @@ public class LancamentoRepositoryImpl implements LancamentoRepositoryQuery{
 		if(!StringUtils.isEmpty(lancamentoFilter.getDescricao())) {
 			
 			predicates.add(builder.like(
-					builder.lower(root.get(Lancamento_.descricao)),
+					builder.lower(root.get("descricao")),
 					"%" + lancamentoFilter.getDescricao().toLowerCase() + "%"
 					));
 		}
 		if(!StringUtils.isEmpty(lancamentoFilter.getDataVencimentoDe())) {
 			predicates.add(builder.greaterThanOrEqualTo(
-					root.get(Lancamento_.dataVencimento), lancamentoFilter.getDataVencimentoDe()));
+					root.get("dataVencimento"), lancamentoFilter.getDataVencimentoDe()));
 		}
 		if(!StringUtils.isEmpty(lancamentoFilter.getDataVencimentoAte())) {
 			predicates.add(builder.lessThanOrEqualTo(
-					root.get(Lancamento_.dataVencimento), lancamentoFilter.getDataVencimentoAte()));
+					root.get("dataVencimento"), lancamentoFilter.getDataVencimentoAte()));
 		}
 		return predicates.toArray(new Predicate[predicates.size()]);
 	}

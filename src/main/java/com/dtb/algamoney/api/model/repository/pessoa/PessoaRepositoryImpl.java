@@ -17,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.util.StringUtils;
 
 import com.dtb.algamoney.api.model.entity.Pessoa;
-import com.dtb.algamoney.api.model.entity.Pessoa_;
 import com.dtb.algamoney.api.model.repository.filter.PessoaFilter;
 import com.dtb.algamoney.api.model.repository.utils.Paginador;
 
@@ -41,11 +40,11 @@ public class PessoaRepositoryImpl implements PessoaRepositoryQuery{
 		List<Predicate> predicates = new ArrayList<>();
 		if(!StringUtils.isEmpty(pessoaFilter.getNome())) {
 			predicates.add(builder.like(
-					builder.lower(root.get(Pessoa_.nome)), "%"+pessoaFilter.getNome().toLowerCase()+"%"));
+					builder.lower(root.get("nome")), "%"+pessoaFilter.getNome().toLowerCase()+"%"));
 		}
 		if(!StringUtils.isEmpty(pessoaFilter.getAtivo())) {
 			predicates.add(builder.equal(
-					root.get(Pessoa_.ativo),
+					root.get("ativo"),
 					pessoaFilter.getAtivo()
 					));
 		}
